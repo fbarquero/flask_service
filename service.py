@@ -30,7 +30,7 @@ def get_tasks():
     return jsonify({'tasks': tasks})
 
 @app.route('/todo/api/v1.0/healthcheck', methods=['GET'])
-def get_tasks():
+def health():
     return jsonify({'status': "I'm Healthy!!"})
 
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])
@@ -52,7 +52,7 @@ def create_task():
         'done': False
     }
     tasks.append(task)
-    return jsonify({'task': task}), 201
+    return jsonify({'task': task}), 200
 
 
 @app.route('/todo/api/v1.0/login', methods=['POST'])
