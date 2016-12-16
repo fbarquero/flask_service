@@ -22,7 +22,7 @@ tasks = [
     }
 ]
 
-valid_user_tokens = ['9a16cf99-c28a-11e6-a3ed-6c40089a7e6e']
+valid_user_tokens = []
 
 
 def authenticate():
@@ -75,7 +75,7 @@ def create_task():
 @app.route('/todo/api/v1.0/login', methods=['POST'])
 def login():
     token = uuid.uuid1()
-    valid_user_tokens.append(token)
+    valid_user_tokens.append(str(token))
     return jsonify({'token': token})
 
 
@@ -89,7 +89,9 @@ def get_html():
            '</html>'
     return html
 
-
+@app.route('/todo/api/v1.0/tokens', methods=['GET'])
+def get_tokens():
+    return jsonify({'tokens': valid_user_tokens})
 
 @app.errorhandler(404)
 def not_found(error):
