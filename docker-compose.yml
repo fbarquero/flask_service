@@ -1,0 +1,17 @@
+# Docker compose file for Redis + Python REST service example
+version: '3'
+services:
+  redis:
+    image: redis
+    volumes:
+    - D:\docker_volumes\redis\data:/data
+    container_name: redis_fask_service
+    ports:
+      - 6379:6379
+  flask_service:
+    depends_on:
+      - redis
+    image: fbarquero/flask_service
+    container_name: flask_service_qafest
+    ports:
+      - 11000:11000

@@ -5,7 +5,7 @@ headers = {'Content-Type': 'application/json', 'auth-token': '9a16cf99-c28a-11e6
 #
 session = Session()
 #
-# response = session.get('http://localhost:5000/todo/api/v1.0/tasks', headers=headers)
+response = session.get('http://localhost:5000/todo/api/v1.0/tasks', headers=headers)
 # # response = session.post('http://localhost:5000/todo/api/v1.0/login', headers=headers)
 task_number = 3
 task_name = 'task_{}'.format(uuid1())
