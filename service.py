@@ -5,23 +5,10 @@ from flask import request
 from functools import wraps
 import uuid
 
+from redis_connector import RedisConn
+
+
 app = Flask(__name__)
-
-tasks = [
-    {
-        'id': 1,
-        'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol',
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web',
-        'done': False
-    }
-]
-
 valid_user_tokens = []
 
 
@@ -40,36 +27,35 @@ def requires_auth(f):
     return decorated
 
 
-@app.route('/todo/api/v1.0/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
+@app.route('/v1.0/redis/entries', methods=['GET'])
+def get_all_redis_entries():
+    return jsonify({'tasks': ""})
 
 
-@app.route('/todo/api/v1.0/healthcheck', methods=['GET'])
+@app.route('/v1.0/redis/healthcheck', methods=['GET'])
 def health():
     return jsonify({'status': "I'm Healthy!!"})
 
 
-@app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    task = [task for task in tasks if task['id'] == task_id]
-    if len(task) == 0:
+@app.route('/v1.0/redis/entry/<int:task_id>', methods=['GET'])
+def get_redis_entry(entry_key):
+    value = RedisConn().redis_read(entry_key)
+    if value is None:
         abort(404)
-    return jsonify({'task': task[0]})
+    return jsonify({'data': value})
 
 
-@app.route('/todo/api/v1.0/tasks', methods=['POST'])
-def create_task():
-    if not request.json or 'title' not in request.json:
+@app.route('/v1.0/add_redis_entry', methods=['POST'])
+def add_redis_entry():
+    if not request.json or 'redis_entry' not in request.json:
         abort(400)
-    task = {
-        'id': tasks[-1]['id'] + 1,
-        'title': request.json['title'],
-        'description': request.json.get('description', ""),
-        'done': False
-    }
-    tasks.append(task)
-    return jsonify({'task': task}), 200
+    data = request.json['redis_entry']
+    key = data['key']
+    value = data['value']
+    k = RedisConn().redis_write(key, value)
+    if k is None:
+        abort(501)
+    return jsonify({'data': k}), 201
 
 
 @app.route('/todo/api/v1.0/login', methods=['POST'])
@@ -79,23 +65,15 @@ def login():
     return jsonify({'token': token})
 
 
-@app.route('/todo/api/v1.0/html', methods=['GET'])
-@requires_auth
-def get_html():
-    html = '<html>' \
-                '<body>' \
-                    '<h1>HELLO WORLD!!<h1>' \
-                '</body>' \
-           '</html>'
-    return html
-
 @app.route('/todo/api/v1.0/tokens', methods=['GET'])
 def get_tokens():
     return jsonify({'tokens': valid_user_tokens})
+
 
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
+
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=11000)
+    app.run(debug=True, host="0.0.0.0", port=12000)

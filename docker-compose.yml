@@ -14,4 +14,4 @@ services:
     image: fbarquero/flask_service
     container_name: flask_service_qafest
     ports:
-      - 11000:11000
+      - 12000:12000
