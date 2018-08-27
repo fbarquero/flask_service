@@ -5,7 +5,7 @@ class RedisConn:
 
     def __init__(self):
         self._r = redis.Redis(
-            host='localhost',
+            host='redis_flask_service',
             port=6379)
 
     def redis_write(self, key, value):

@@ -5,13 +5,15 @@ services:
     image: redis
     volumes:
     - D:\docker_volumes\redis\data:/data
-    # container_name: redis_fask_service
+    # If adding a fixed container name then won't be able to scale
+    container_name: redis_flask_service
     ports:
       - 6379:6379
   flask_service:
     depends_on:
       - redis
     image: fbarquero/flask_service
-    # container_name: flask_service_qafest
+    # If adding a fixed container name then won't be able to scale
+    container_name: flask_service
     ports:
       - 4201:4201
