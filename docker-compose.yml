@@ -5,13 +5,13 @@ services:
     image: redis
     volumes:
     - D:\docker_volumes\redis\data:/data
-    container_name: redis_fask_service
+    # container_name: redis_fask_service
     ports:
       - 6379:6379
   flask_service:
     depends_on:
       - redis
     image: fbarquero/flask_service
-    container_name: flask_service_qafest
+    # container_name: flask_service_qafest
     ports:
-      - 12000:12000
+      - 4201:4201
