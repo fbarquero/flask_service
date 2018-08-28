@@ -4,7 +4,7 @@ services:
   redis:
     image: redis
     volumes:
-    - D:\docker_volumes\redis\data:/data
+    - .redis/data:/data
     # If adding a fixed container name then won't be able to scale
     container_name: redis_flask_service
     ports:
